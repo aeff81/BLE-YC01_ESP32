@@ -6,7 +6,7 @@
 #include <ESPmDNS.h>
 
 #define ssid "ESP32-Access-Point"
-#define SENSOR_COUNT 8 // Statt 7
+#define SENSOR_COUNT 8
 #define ZIELMAC "C0:00:00:XX:XX:XX"
 
 class YC01Device {
