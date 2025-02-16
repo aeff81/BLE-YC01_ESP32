@@ -10,10 +10,14 @@ Why I did that? For 2 reasons:
    that might help me to completely understand the relation of the different values
 
 Just another hint: It's fairly easy to get the Bytes from the device by using gatttool:
+
   gatttool -b C0:00:00:XX:XX:XX --char-read -a 0x000e
+  
 but you'll get something like
+
   ff a1 fe fa fc 09 ff 03 fd 01 fe ef ff c7 fd b8 fa b8 2f fc 
-from that and have to do some wired stuff to get the desired values from that.
+
+from that and have to do some wired stuff to get the desired values.
 So I ended up asking Bing-AI to convert the Python-Skript from jdeath (https://github.com/jdeath/BLE-YC01/blob/main/custom_components/ble_yc01/BLE_YC01/parser.py  --  thanks again!) 
 to Arduino code.
 
