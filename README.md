@@ -2,7 +2,7 @@
 I was looking for a way to Access my BLE-YC01 Pool-Monitor without the Yinmik-App.
 I'm sharing this mainly because it took me quite a while to gather all the information needed. So don't laugh about my programming style :-)
 Most of the conversation stuff was done by the HomeAssistant and some other communities (great thanks to them!), 
-but I wanted a standalone solution since there's no HomeAssistant in near my Swimmingpool.
+but I wanted a standalone solution since there's no HomeAssistant near my Swimmingpool.
 
 Why I did that? For 2 reasons:
  - to extend the signal range by using WiFi instead of BLE
