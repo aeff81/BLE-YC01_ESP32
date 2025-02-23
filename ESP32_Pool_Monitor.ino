@@ -1,4 +1,5 @@
 #include <NimBLEDevice.h>
+#include <ArduinoJson.h>
 
 // Load Wi-Fi library
 #include <WiFi.h>
@@ -154,19 +155,36 @@ String WorkSomething(int modus) {
   Serial.print("temperature: "); Serial.println(device.sensors[7]);
 
   if (modus==0) {
+	/*
+		pH-Wert:
+		    Idealwert: 7,2 - 7,4
+		    Grenzwerte: 7,0 - 7,6
+		ORP (Redoxpotential):
+		    Idealwert: 650 - 750 mV
+		    Grenzwerte: 600 - 800 mV
+		EC (Leitfähigkeit):
+		    Idealwert: 1000 - 2000 µS/cm
+		    Grenzwerte: 500 - 3000 µS/cm
+		Chlor (freies Chlor):
+		    Idealwert: 0,5 - 1,0 mg/L
+		    Grenzwerte: 0,3 - 3,0 mg/L
+		Total Dissolved Solids (TDS):
+		    Idealwert: 1000 - 2000 ppm
+		    Grenzwerte: 500 - 3000 ppm
+	*/
     String a = "<table>";
     if (device.sensors[4] > 99) {
-      a+= "<tr><td>pH</td><td><font color=red>" + String(device.sensors[5]) + "</font></td></tr>";
-      a+= "<tr><td><s>Chlor</s></td><td><s>&gt;99</s></td><td><font color=red>Messung fehlerhaft: pH kontrollieren</font></td></tr>";
+      a+= "<tr><td>pH</td><td><font color=red>" + String(device.sensors[5]) + "</font></td><td></td><td>(7.0, 7.2..7.4, 7.6)</td></tr>";
+      a+= "<tr><td><s>Chlor</s></td><td><s>&gt;99</s></td><td><font color=red>Messung fehlerhaft: pH kontrollieren</font></td><td></td></tr>";
     } else {
-      a += "<tr><td>pH</td><td>" + String(device.sensors[5]) + "</td></tr>";
-      a += "<tr><td>Chlor</td><td>" + String(device.sensors[4]) + "</td><td>mg/l</td></tr>";
+      a += "<tr><td>pH</td><td>" + String(device.sensors[5]) + "</td><td></td><td>(7.0, 7.2..7.4, 7.6)</td></tr>";
+      a += "<tr><td>Chlor</td><td>" + String(device.sensors[4]) + "</td><td>mg/l (ppm)</td><td>(0.3, 0.5..1.0, 3.0)</td></tr>";
     }
-    a += "<tr><td>Temperatur</td><td>" + String(device.sensors[7]) + "</td><td>C</td></tr>";
-    a += "<tr><td>ORP</td><td>" + String(device.sensors[6]) + "</td><td>V</td></tr>";
-    a += "<tr><td>Leitf&auml;higkeit</td><td>" + String(device.sensors[1]) + "</td><td>uS/cm</td></tr>";
-    a += "<tr><td>Solids</td><td>" + String(device.sensors[3]) + "</td><td>ppm</td></tr>";
-    a += "<tr><td>Salz</td><td>" + String(device.sensors[2]) + "</td></tr>";
+    a += "<tr><td>Temperatur</td><td>" + String(device.sensors[7]) + "</td><td>&deg;C</td><td></td></tr>";
+    a += "<tr><td>ORP</td><td>" + String(device.sensors[6]) + "</td><td>V</td><td>(0.6, 0.65..0.75, 0.8)</td></tr>";
+    a += "<tr><td>Leitf&auml;higkeit</td><td>" + String(device.sensors[1]) + "</td><td>uS/cm</td><td>(500, 1000..2000, 3000)</td></tr>";
+    a += "<tr><td>Solids</td><td>" + String(device.sensors[3]) + "</td><td>ppm (mg/l)</td><td>(500, 1000..2000, 3000)</td></tr>";
+    a += "<tr><td>Salz</td><td>" + String(device.sensors[2]) + "</td><td></td></tr>";
     a += "</table><br>Batterie: " + String(device.sensors[0]);
     return a;
   } else if (modus==1) {
@@ -179,9 +197,20 @@ String WorkSomething(int modus) {
      a += ",temp=" + String(device.sensors[7]) + ",orp=" + String(device.sensors[6]) + ",lf=" + String(device.sensors[1]);
      a += ",sol=" + String(device.sensors[3]) + ",sal=" + String(device.sensors[2]) + ",bat=" + String(device.sensors[0]);
      return a;
-    } else {
-
-  }
+    } else if (modus==2) {
+      JsonDocument doc;
+      doc["battery"]=device.sensors[0];
+      doc["ec"]=device.sensors[1];
+      doc["salt"]=device.sensors[2];
+      doc["tds"]=device.sensors[3];
+      doc["cl"]=device.sensors[4];
+      doc["ph"]=device.sensors[5];
+      doc["orp"]=device.sensors[6];
+      doc["temp"]=device.sensors[7];
+      char output[128];
+      serializeJson(doc, output);
+      return output;
+  } else {}
 
 }
 
@@ -224,6 +253,12 @@ void handle_csv() {
   server.send(200, "text/csv", ptr); 
 }
 
+void handle_json() {
+  String ptr = WorkSomething(2);
+  server.send(200, "application/json", ptr); 
+}
+
+
 void setup() {
   Serial.begin(115200);
   Serial.print("Setting AP (Access Point)…");
@@ -236,6 +271,7 @@ void setup() {
   }
   server.on("/", handle_root);
   server.on("/csv", handle_csv);
+  server.on("/json", handle_json);
   server.onNotFound(handleNotFound);
   server.begin();
   Serial.println("HTTP server started");
