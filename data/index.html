@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<script src="index.js"></script>
+<link rel="stylesheet" href="index.css">
+<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\">
+<title>Pool Control</title>
+</head>
+<body><h1>Pool Monitor</h1>
+	<table>
+		<tr><td>pH</td><td id="ph"></td><td></td><td>(7.0,  7.2..7,4, 7.6)</td></tr>
+		<tr><td>Chlor</td><td id="cl"></td><td>mg/L, ppm</td><td>(0.3,  0.5..1.0, 3.0)</td></tr>
+		<tr><td>Leitf&auml;higkeit</td><td id="ec"></td><td>uS/cm</td><td>(500, 1000..2000, 3000)</td></tr>
+		<tr><td>ORP</td><td id="orp"></td><td>V</td><td>(0.6, 0.65..0.75, 0.8)</td></tr>
+		<tr><td>TDS</td><td id="tds"></td><td>ppm, mg/L</td><td>(500, 1000..2000, 3000)</td></tr>
+		<tr><td>Salz</td><td id="salt"></td></tr>
+		<tr><td>Temperatur</td><td id="temp"></td><td>&deg;C</td></tr>
+		<tr><td>Batterie</td><td id="battery"></td><td>&percnt;</td></tr>
+	</table>
+	<h3>Legende</h3><ul>
+		<li><font color="blue">viel zu wenig</font>
+		<li><font color="red">viel zu viel</font>
+		<li><font color="green">perfekt</font>
+		<li><font color="orange">ok</font>
+	<hr><small id="zeit"></small>
+</body></html>
